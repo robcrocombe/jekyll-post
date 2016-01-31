@@ -1,0 +1,26 @@
+{
+  "name": "jekyll-post",
+  "version": "1.0.0",
+  "description": "Draft, edit, publish Jekyll posts from the command line",
+  "main": "post.js",
+  "bin": {
+    "post": "./post.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robcrocombe/jekyll-post.git"
+  },
+  "author": "Rob Crocombe <me@robcrocombe.com> (http://robcrocombe.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robcrocombe/jekyll-post/issues"
+  },
+  "homepage": "https://github.com/robcrocombe/jekyll-post#readme",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "gray-matter": "^2.0.2"
+  }
+}
