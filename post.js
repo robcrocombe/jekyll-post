@@ -10,6 +10,7 @@ const draftDir = process.cwd() + '/_drafts';
 const postDir = process.cwd() + '/_posts';
 var program = require('commander');
 var matter = require('gray-matter');
+var moment = require('moment');
 var fs = require('fs');
  
 program
@@ -44,21 +45,19 @@ function createDraft() {
     slug: fileName
   };
 
-  var stats = fs.stat(path, (err, stats) => {
-    if (err) {
-      writeFile(path, frontMatter);
-    }
-    else {
-      rl.question(`File '${fileName}.md' already exists. Overwrite? (y/n) `, (answer) => {
-        if (answer.toLowerCase() !== 'y') {
-          exit(0);
-        }
-        else {
-          writeFile(path, fileName, frontMatter);
-        }
-      });
-    }
-  });
+  if (fileExists(path)) {
+    rl.question(`File '${path}' already exists. Overwrite? (y/n) `, (answer) => {
+      if (answer.toLowerCase() !== 'y') {
+        exit(0);
+      }
+      else {
+        writeFileThenExit(path, fileName, frontMatter);
+      }
+    });
+  }
+  else {
+    writeFileThenExit(path, fileName, frontMatter);
+  }
 }
 
 function publishPost() {
@@ -88,29 +87,36 @@ function publishSinglePost() {
   var fileName = parseName(postName);
   var path = `${draftDir}/${fileName}.md`;
 
-  var stats = fs.stat(path, (err, stats) => {
-    if (err) {
-      console.log(err);
-      exit(1);
-    }
-    else {
-      var post = matter.read(path);
-      var now = new Date();
-      post.data.date = now.toUTCString().replace(',', '');
+  if (fileExists(path)) {
+    var post = matter.read(path);
+    var now = moment();
+    post.data.date = getDateTime(now);
 
-      var publishPath = `${postDir}/${getDateOnly(now)}-${fileName}.md`;
-      if (writeFile(publishPath, fileName, post.data, post.content)) {
-        exit(0);
-      }
-      else {
-        exit(1);
-      }
-    }
-  });
+    var publishPath = `${postDir}/${getDateOnly(now)}-${fileName}.md`;
+    writeFileThenExit(publishPath, fileName, post.data, post.content);
+  }
+  else {
+    console.log(`File '${path}' doesn't exist.`);
+    exit(1);
+  }
+}
+
+function getDateTime(date) {
+  return date.format('YYYY-MM-DD HH:mm:ssZ');
 }
 
 function getDateOnly(date) {
-  return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+  return date.format('YYYY-MM-DD');
+}
+
+function fileExists(path) {
+  try {
+    fs.accessSync(path);
+    return true;
+  }
+  catch {
+    return false;
+  }
 }
 
 function writeFile(path, name, frontMatter, content) {
@@ -118,14 +124,22 @@ function writeFile(path, name, frontMatter, content) {
 
   try {
     fs.writeFileSync(path, matter.stringify(content, frontMatter));
+    console.log(`Post '${name}.md' created.`);
+    return true;
   }
   catch(err) {
     console.log(err);
     return false;
   }
+}
 
-  console.log(`Post '${name}.md' created.`);
-  return true;
+function writeFileThenExit(path, name, frontMatter, content) {
+  if (writeFile(path, name, frontMatter, content)) {
+    exit(0);
+  }
+  else {
+    exit(1);
+  }
 }
 
 function exit(status) {

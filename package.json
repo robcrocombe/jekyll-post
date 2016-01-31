@@ -21,6 +21,7 @@
   "homepage": "https://github.com/robcrocombe/jekyll-post#readme",
   "dependencies": {
     "commander": "^2.9.0",
-    "gray-matter": "^2.0.2"
+    "gray-matter": "^2.0.2",
+    "moment": "^2.11.1"
   }
 }
