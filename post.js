@@ -6,7 +6,8 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
-const workingDir = process.cwd();
+const draftDir = process.cwd() + '/_drafts';
+const postDir = process.cwd() + '/_posts';
 var program = require('commander');
 var matter = require('gray-matter');
 var fs = require('fs');
@@ -19,10 +20,12 @@ program
   .parse(process.argv);
 
 if (program.publish) {
-  console.log(program.publish);
+  var postName = program.publish;
+  publishPost();
 }
 else if (program.draft) {
-  createDraft(program.draft);
+  var postName = program.draft;
+  createDraft();
 }
 
 function parseName(val) {
@@ -31,9 +34,9 @@ function parseName(val) {
     .replace(/[^A-Za-z0-9_-]+/g, '-');
 }
 
-function createDraft(postName) {
+function createDraft() {
   var fileName = parseName(postName);
-  var path = `${workingDir}/_drafts/${fileName}.md`;
+  var path = `${draftDir}/${fileName}.md`;
 
   var frontMatter = {
     layout: 'post',
@@ -51,24 +54,78 @@ function createDraft(postName) {
           exit(0);
         }
         else {
-          writeFile(path, frontMatter);
+          writeFile(path, fileName, frontMatter);
         }
       });
     }
   });
 }
 
-function writeFile(path, frontMatter) {
-  fs.writeFile(path, matter.stringify('', frontMatter),
-    (err) => {
-      if (err) {
-          return console.log(err);
-          exit(1);
-      }
+function publishPost() {
+  if (postName == true) {
+    publishAllPosts();
+  }
+  else {
+    publishSinglePost();
+  }
+}
 
-      console.log(`Post '${frontMatter.slug}.md' created.`);
-      exit(0);
+function publishAllPosts() {
+  fs.readdir(draftDir, (err, files) => {
+    if (err) {
+      return console.log(err);
+      exit(1);
+    }
+    else {
+      for (var file in files) {
+
+      }
+    }
   });
+}
+
+function publishSinglePost() {
+  var fileName = parseName(postName);
+  var path = `${draftDir}/${fileName}.md`;
+
+  var stats = fs.stat(path, (err, stats) => {
+    if (err) {
+      console.log(err);
+      exit(1);
+    }
+    else {
+      var post = matter.read(path);
+      var now = new Date();
+      post.data.date = now.toUTCString().replace(',', '');
+
+      var publishPath = `${postDir}/${getDateOnly(now)}-${fileName}.md`;
+      if (writeFile(publishPath, fileName, post.data, post.content)) {
+        exit(0);
+      }
+      else {
+        exit(1);
+      }
+    }
+  });
+}
+
+function getDateOnly(date) {
+  return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+}
+
+function writeFile(path, name, frontMatter, content) {
+  content = content || '';
+
+  try {
+    fs.writeFileSync(path, matter.stringify(content, frontMatter));
+  }
+  catch(err) {
+    console.log(err);
+    return false;
+  }
+
+  console.log(`Post '${name}.md' created.`);
+  return true;
 }
 
 function exit(status) {
