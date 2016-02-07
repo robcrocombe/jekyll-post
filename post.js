@@ -17,6 +17,8 @@ program
   .option('u, unpublish <name>', 'unpublish a post')
   .parse(process.argv);
 
+checkJekyllExists();
+
 if (program.draft) {
   createDraft(program.draft);
 }
@@ -162,6 +164,24 @@ function getDateTime(date) {
 
 function getDateOnly(date) {
   return date.format('YYYY-MM-DD');
+}
+
+function checkJekyllExists() {
+  var draftDirExist = fileExists(DRAFT_DIR);
+  var postDirExist = fileExists(POST_DIR);
+
+  if (!draftDirExist && !postDirExist) {
+    console.log(`Draft and post folders not found. Are you in a Jekyll project?`);
+    exit(1);
+  }
+  else if (!draftDirExist) {
+    console.log(`Draft folder not found. Are you in a Jekyll project?`);
+    exit(1);
+  }
+  else if (!postDirExist) {
+    console.log(`Post folder not found. Are you in a Jekyll project?`);
+    exit(1);
+  }
 }
 
 function fileExists(path) {
