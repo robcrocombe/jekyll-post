@@ -11,7 +11,7 @@ var fs = require('fs-extra');
 
 program
   .version('1.0.0')
-  .usage('post <command> "name"')
+  .usage('<command> "post name"')
   .option('d, draft <name>', 'create a draft post')
   .option('p, publish [name]', 'publish all drafts, or a single draft')
   .option('u, unpublish <name>', 'unpublish a post')
