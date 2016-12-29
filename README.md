@@ -1,7 +1,7 @@
 # jekyll-post
 Draft, edit, publish Jekyll posts from the command line.
 
-Clone the repository, then run `npm install -g` to install.
+Installation: `npm install -g robcrocombe/jekyll-post`
 
 Usage: `post <command> "post name"`
 
@@ -14,3 +14,5 @@ Options:
   p, publish [name]    publish all drafts, or a single draft
   u, unpublish <name>  unpublish a post
 ```
+
+Jekyll-Post can be ran from the root of any Jekyll directory containing `_drafts` and `_posts`.
