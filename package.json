@@ -1,6 +1,6 @@
 {
   "name": "jekyll-post",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Draft, edit, publish Jekyll posts from the command line",
   "main": "post.js",
   "bin": {
@@ -24,16 +24,16 @@
   },
   "homepage": "https://github.com/robcrocombe/jekyll-post#readme",
   "devDependencies": {
-    "eslint": "^3.12.2",
-    "eslint-codeframe-formatter": "^1.0.2",
-    "eslint-config-airbnb-base": "^11.0.0",
-    "eslint-plugin-import": "^2.2.0"
+    "eslint": "6.5.1",
+    "eslint-codeframe-formatter": "1.0.2",
+    "eslint-config-airbnb-base": "14.0.0",
+    "eslint-plugin-import": "2.18.2"
   },
   "dependencies": {
-    "commander": "^2.9.0",
-    "fs-extra": "^1.0.0",
-    "gray-matter": "^2.1.0",
-    "moment": "^2.17.1",
-    "readline-sync": "^1.4.5"
+    "commander": "3.0.2",
+    "fs-extra": "8.1.0",
+    "gray-matter": "4.0.2",
+    "moment": "2.24.0",
+    "readline-sync": "1.4.10"
   }
 }
